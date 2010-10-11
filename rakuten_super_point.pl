@@ -32,30 +32,20 @@ my $rakuten_config = pit_get(
 
 my $mech = WWW::Mechanize->new();
 
-$mech->get('https://point.rakuten.co.jp/');
+$mech->get('http://www.rakuten.co.jp/');
+$mech->follow_link( url_regex => qr/login/i );
 $mech->submit_form(
     fields => {
         u => $rakuten_config->{username},
         p => $rakuten_config->{password},
     }
 );
-$mech->follow_link(
-    url => 'https://point.rakuten.co.jp/PointHistory/PointHistoryDisplay/' );
+$mech->get('http://www.rakuten.co.jp/');
 
 my $scraper = scraper {
     process(
-        '/html[1]/body[1]/div[1]/div[1]/table/tr/td[3]/table[1]/tr[1]/td/table/tr[2]/td/table/tr[3]/td[1]',
+        '/html[1]/body[1]/div[1]/table[4]/tr/td[3]/table[5]/tr/td/table[2]/tr/td/table/tr/td[2]/font',
         'point' => 'TEXT'
-    );
-
-    process(
-        '/html[1]/body[1]/div[1]/div[1]/table[1]/tr[1]/td[3]/table[2]/tr[1]/td[1]/table[1]/tr[1]/td[1]/table[1]/tr[position() > 2]/td[1]',
-        'expiration_date[]' => 'TEXT'
-    );
-
-    process(
-        '/html[1]/body[1]/div[1]/div[1]/table[1]/tr[1]/td[3]/table[2]/tr[1]/td[1]/table[1]/tr[1]/td[1]/table[1]/tr[position() > 2]/td[2]',
-        'point_with_timelimit[]' => 'TEXT'
     );
 };
 
@@ -66,16 +56,7 @@ my $expiration_dates      = $result->{expiration_date};
 
 my $body = <<"EOF";
 総保有ポイント：$point
-期間限定ポイント：
 EOF
-
-my $i = 0;
-while ( $i < @$point_with_timelimits ) {
-    $body .= sprintf( "%d(%s)\n",
-        $point_with_timelimits->[$i],
-        $expiration_dates->[$i] );
-    $i++;
-}
 
 my $email = Email::MIME->create(
     header => [
