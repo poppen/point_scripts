@@ -35,8 +35,8 @@ my $mech = WWW::Mechanize->new();
 $mech->get('https://tsite.jp/');
 $mech->submit_form(
     fields => {
-        kaiin_no => $tsite_config->{username},
-        password => $tsite_config->{password},
+        LOGIN_ID => $tsite_config->{username},
+        PASSWORD => $tsite_config->{password},
     },
     button => 'on_next',
 );
