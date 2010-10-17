@@ -47,6 +47,16 @@ my $scraper = scraper {
         '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl/dd',
         'point' => 'TEXT'
     );
+
+    process(
+        '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl[3]/dt',
+        'expiration_date[]' => 'TEXT'
+    );
+
+    process(
+        '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl[3]/dd',
+        'point_with_timelimit[]' => 'TEXT'
+    );
 };
 
 my $result                = $scraper->scrape( $mech->content );
@@ -56,7 +66,16 @@ my $expiration_dates      = $result->{expiration_date};
 
 my $body = <<"EOF";
 総保有ポイント：$point
+期間限定ポイント：
 EOF
+
+my $i = 0;
+while ( $i < @$point_with_timelimits ) {
+    $body .= sprintf( "%d(%s)\n",
+        $point_with_timelimits->[$i],
+        $expiration_dates->[$i] );
+    $i++;
+}
 
 my $email = Email::MIME->create(
     header => [
