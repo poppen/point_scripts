@@ -40,11 +40,11 @@ $mech->submit_form(
         p => $rakuten_config->{password},
     }
 );
-$mech->get('http://www.rakuten.co.jp/');
+$mech->get('https://point.rakuten.co.jp/Top/TopDisplay/');
 
 my $scraper = scraper {
     process(
-        '/html[1]/body[1]/div[1]/table[4]/tr/td[3]/table[5]/tr/td/table[2]/tr/td/table/tr/td[2]/font',
+        '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl/dd',
         'point' => 'TEXT'
     );
 };
