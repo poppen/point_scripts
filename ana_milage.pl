@@ -22,11 +22,11 @@ my $email_config = pit_get(
     }
 );
 
-my $rakuten_config = pit_get(
+my $ana_config = pit_get(
     "ana.co.jp",
     require => {
-        "username" => "your username on rakuten",
-        "password" => "your password on rakuten",
+        "username" => "your username on ana",
+        "password" => "your password on ana",
     }
 );
 
@@ -36,8 +36,8 @@ $mech->get('https://www.ana.co.jp/');
 $mech->submit_form(
     form_name => 'loginForm',
     fields => {
-        custno => $rakuten_config->{username},
-        password => $rakuten_config->{password},
+        custno => $ana_config->{username},
+        password => $ana_config->{password},
     }
 );
 $mech->submit();
