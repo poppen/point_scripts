@@ -4,6 +4,9 @@ use warnings;
 use strict;
 
 use Config::Pit;
+use Getopt::Long;
+use Pod::Usage;
+
 use WWW::Mechanize;
 use Web::Scraper;
 
@@ -14,13 +17,21 @@ use Encode;
 
 use Email::Sender::Simple 'sendmail';
 
-my $email_config = pit_get(
-    "personal.server",
-    require => {
-        "email"        => "your email address",
-        "mobile_email" => "your mobile email address",
-    }
-);
+my $options = {
+    from    => 'nobody@example.com',
+    subject => "ANAマイル"
+};
+
+GetOptions(
+    $options,
+    'from=s',
+    'subject=s',
+    'help'
+) or pod2usage();
+pod2usage() if $options->{help};
+
+pod2usage() unless $ARGV[0];
+$options->{to} = $ARGV[0];
 
 my $ana_config = pit_get(
     "ana.co.jp",
@@ -75,10 +86,10 @@ for my $item (@items) {
 
 my $email = Email::MIME->create(
     header => [
-        From    => $email_config->{email},
-        To      => $email_config->{mobile_email},
+        From    => $options->{from},
+        To      => $options->{to},
         Subject => encode(
-            'MIME-Header-ISO_2022_JP' => 'ANAマイル'
+            'MIME-Header-ISO_2022_JP' => $options->{subject}
         ),
     ],
     attributes => {
@@ -90,3 +101,21 @@ my $email = Email::MIME->create(
 );
 
 sendmail($email);
+
+__END__
+
+=head1 NAME
+
+ana_milage.pl - emailing ana milage
+
+=head1 SYNOPSIS
+
+ana_milage.pl [options] address
+
+ Options:
+   -f, --from      From address
+   -s, --subject   Subject
+   -h, --help      This help message
+
+=cut
+
