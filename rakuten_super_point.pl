@@ -44,17 +44,17 @@ $mech->get('https://point.rakuten.co.jp/Top/TopDisplay/');
 
 my $scraper = scraper {
     process(
-        '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl/dd',
+        'id("pointAccount")//dl[@class="total"]/dd',
         'point' => 'TEXT'
     );
 
     process(
-        '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl[3]/dt',
+        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder"]/dt',
         'expiration_date[]' => 'TEXT'
     );
 
     process(
-        '/html/body/div/div[2]/div/div/div[2]/div[2]/div/div/dl[3]/dd',
+        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder"]/dd',
         'point_with_timelimit[]' => 'TEXT'
     );
 };

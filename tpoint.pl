@@ -34,6 +34,7 @@ my $mech = WWW::Mechanize->new();
 
 $mech->get('https://tsite.jp/');
 $mech->submit_form(
+    form_number => 2,
     fields => {
         LOGIN_ID => $tsite_config->{username},
         PASSWORD => $tsite_config->{password},
