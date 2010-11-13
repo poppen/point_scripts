@@ -53,7 +53,7 @@ my $expiration_date = $result->{expiration_date};
 
 my $body = <<"EOF";
 只今のTポイント：$point
-Tポイント有効期限：$expiration_date
+$expiration_date
 EOF
 
 my $email = Email::MIME->create(
