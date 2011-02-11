@@ -3,10 +3,16 @@
 use warnings;
 use strict;
 
+use Getopt::Long;
 use Encode;
 use Config::Pit;
 use WWW::Mechanize;
 use Web::Scraper;
+
+my $opt_expiration_date = 0;
+GetOptions(
+    expire => \$opt_expiration_date
+);
 
 my $ana_config = pit_get(
     "ana.co.jp",
@@ -49,14 +55,11 @@ my $result =
 my $total_mile = $result->{total_mile};
 my @items      = @{$result->{items}};
 
-my $body = <<"EOF";
-Total:$total_mile
-Expire:
-EOF
-$body = encode('utf8' => $body);
-
-for my $item (@items) {
-    $body .= sprintf( "%s: %s\n" => $item->{date}, $item->{mile} );
+my $body = $total_mile . "\n";
+if ($opt_expiration_date) {
+    for my $item (@items) {
+        $body .= sprintf( "%s: %s\n" => $item->{date}, $item->{mile} );
+    }
 }
 
-print $body, "\n";
+print $body;
