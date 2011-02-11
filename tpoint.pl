@@ -7,21 +7,6 @@ use Config::Pit;
 use WWW::Mechanize;
 use Web::Scraper;
 
-use utf8;
-use Email::MIME;
-use Email::MIME::Creator;
-use Encode;
-
-use Email::Sender::Simple 'sendmail';
-
-my $email_config = pit_get(
-    "personal.server",
-    require => {
-        "email"        => "your email address",
-        "mobile_email" => "your mobile email address",
-    }
-);
-
 my $tsite_config = pit_get(
     "tsite",
     require => {
@@ -52,22 +37,8 @@ my $point           = $result->{point};
 my $expiration_date = $result->{expiration_date};
 
 my $body = <<"EOF";
-只今のTポイント：$point
-$expiration_date
+$point($expiration_date)
 EOF
 
-my $email = Email::MIME->create(
-    header => [
-        From    => $email_config->{email},
-        To      => $email_config->{mobile_email},
-        Subject => encode( 'MIME-Header-ISO_2022_JP' => 'Tポイント' ),
-    ],
-    attributes => {
-        content_type => 'text/plain',
-        charset      => 'ISO-2022-JP',
-        encoding     => '7bit',
-    },
-    body => encode( 'iso-2022-jp' => $body ),
-);
-
-sendmail($email);
+binmode(STDOUT, ":utf8");
+print $body, "\n";
