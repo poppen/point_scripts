@@ -48,4 +48,4 @@ if ($opt_expiration_date) {
 }
 
 binmode(STDOUT, ":utf8");
-print $body, "\n";
+print $body;
