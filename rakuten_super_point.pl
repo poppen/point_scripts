@@ -3,9 +3,15 @@
 use warnings;
 use strict;
 
+use Getopt::Long;
 use Config::Pit;
 use WWW::Mechanize;
 use Web::Scraper;
+
+my $opt_expiration_date = 0;
+GetOptions(
+    expire => \$opt_expiration_date
+);
 
 my $rakuten_config = pit_get(
     "rakuten.co.jp",
@@ -49,18 +55,17 @@ my $point                 = $result->{point};
 my $point_with_timelimits = $result->{point_with_timelimit};
 my $expiration_dates      = $result->{expiration_date};
 
-my $body = <<"EOF";
-Total: $point
-Limited:
-EOF
+my $body = $point . "\n";
 
-my $i = 0;
-while ( $i < @$point_with_timelimits ) {
-    $body .= sprintf( "%d(%s)\n",
-        $point_with_timelimits->[$i],
-        $expiration_dates->[$i] );
-    $i++;
+if ($opt_expiration_date) {
+    my $i = 0;
+    while ( $i < @$point_with_timelimits ) {
+        $body .= sprintf( "%d(%s)\n",
+            $point_with_timelimits->[$i],
+            $expiration_dates->[$i] );
+        $i++;
+    }
 }
 
 binmode(STDOUT, ":utf8");
-print $body, "\n";
+print $body;

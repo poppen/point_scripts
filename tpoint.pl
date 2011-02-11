@@ -3,9 +3,15 @@
 use warnings;
 use strict;
 
+use Getopt::Long;
 use Config::Pit;
 use WWW::Mechanize;
 use Web::Scraper;
+
+my $opt_expiration_date = 0;
+GetOptions(
+    expire => \$opt_expiration_date
+);
 
 my $tsite_config = pit_get(
     "tsite",
@@ -36,9 +42,10 @@ my $result          = $scraper->scrape( $mech->content );
 my $point           = $result->{point};
 my $expiration_date = $result->{expiration_date};
 
-my $body = <<"EOF";
-$point($expiration_date)
-EOF
+my $body = $point . "\n";
+if ($opt_expiration_date) {
+    $body .= $expiration_date . "\n";
+}
 
 binmode(STDOUT, ":utf8");
-print $body, "\n";
+print $body;

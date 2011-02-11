@@ -3,10 +3,16 @@
 use warnings;
 use strict;
 
+use Getopt::Long;
 use Encode;
 use Config::Pit;
 use WWW::Mechanize;
 use Web::Scraper;
+
+my $opt_expiration_date = 0;
+GetOptions(
+    expire => \$opt_expiration_date
+);
 
 my $ana_config = pit_get(
     "ana.co.jp",
@@ -37,7 +43,7 @@ my $scraper = scraper {
 
     process(
         'id("gaiyoubox")//table[@class="mile-tbl bold"]/tr[position() > 1]',
-            'items[]' => scraper {
+            'expires[]' => scraper {
                 process('th', 'date' => 'TEXT');
                 process('td', 'mile' => 'TEXT');
             }
@@ -47,16 +53,13 @@ my $scraper = scraper {
 my $result =
     $scraper->scrape( encode('utf8' =>decode('euc-jp' => $mech->content)) );
 my $total_mile = $result->{total_mile};
-my @items      = @{$result->{items}};
+my @expires    = @{$result->{expires}};
 
-my $body = <<"EOF";
-Total:$total_mile
-Expire:
-EOF
-$body = encode('utf8' => $body);
-
-for my $item (@items) {
-    $body .= sprintf( "%s: %s\n" => $item->{date}, $item->{mile} );
+my $body = $total_mile . "\n";
+if ($opt_expiration_date) {
+    for my $expire (@expires) {
+        $body .= sprintf( "%s: %s\n" => $expire->{date}, $expire->{mile} );
+    }
 }
 
-print $body, "\n";
+print $body;
