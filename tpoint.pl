@@ -23,25 +23,24 @@ my $email_config = pit_get(
 );
 
 my $tsite_config = pit_get(
-    "tsite.jp",
+    "tsite",
     require => {
-        "username" => "your username on tsite.jp",
-        "password" => "your password on tsite.jp",
+        "user" => "your username on tsite.jp",
+        "pass" => "your password on tsite.jp",
     }
 );
 
+my $url = 'https://tsite.jp';
+
 my $mech = WWW::Mechanize->new();
 
-$mech->get('https://tsite.jp/');
-$mech->submit_form(
-    form_number => 2,
-    fields => {
-        LOGIN_ID => $tsite_config->{username},
-        PASSWORD => $tsite_config->{password},
-    },
-    button => 'on_next',
-);
-$mech->get('https://tsite.jp/');
+$mech->get($url);
+$mech->follow_link( id => 'SideLoginBtn' );
+
+$mech->form_name('form1')->action( $url . '/tm/pc/login/STKIp0001010.do' );
+$mech->field('LOGIN_ID', $tsite_config->{user});
+$mech->field('PASSWORD', $tsite_config->{pass});
+my $response = $mech->submit();
 
 my $scraper = scraper {
     process 'strong.SideMyPoint', 'point'           => 'TEXT';
