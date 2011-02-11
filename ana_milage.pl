@@ -43,7 +43,7 @@ my $scraper = scraper {
 
     process(
         'id("gaiyoubox")//table[@class="mile-tbl bold"]/tr[position() > 1]',
-            'items[]' => scraper {
+            'expires[]' => scraper {
                 process('th', 'date' => 'TEXT');
                 process('td', 'mile' => 'TEXT');
             }
@@ -53,12 +53,12 @@ my $scraper = scraper {
 my $result =
     $scraper->scrape( encode('utf8' =>decode('euc-jp' => $mech->content)) );
 my $total_mile = $result->{total_mile};
-my @items      = @{$result->{items}};
+my @expires    = @{$result->{expires}};
 
 my $body = $total_mile . "\n";
 if ($opt_expiration_date) {
-    for my $item (@items) {
-        $body .= sprintf( "%s: %s\n" => $item->{date}, $item->{mile} );
+    for my $expire (@expires) {
+        $body .= sprintf( "%s: %s\n" => $expire->{date}, $expire->{mile} );
     }
 }
 
