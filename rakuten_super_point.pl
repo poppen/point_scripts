@@ -16,8 +16,8 @@ GetOptions(
 my $rakuten_config = pit_get(
     "rakuten.co.jp",
     require => {
-        "username" => "your username on rakuten",
-        "password" => "your password on rakuten",
+        "user" => "your username on rakuten",
+        "pass" => "your password on rakuten",
     }
 );
 
@@ -27,8 +27,8 @@ $mech->get('http://www.rakuten.co.jp/');
 $mech->follow_link( url_regex => qr/login/i );
 $mech->submit_form(
     fields => {
-        u => $rakuten_config->{username},
-        p => $rakuten_config->{password},
+        u => $rakuten_config->{user},
+        p => $rakuten_config->{pass},
     }
 );
 $mech->get('https://point.rakuten.co.jp/Top/TopDisplay/');
