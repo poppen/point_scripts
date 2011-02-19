@@ -59,7 +59,7 @@ my $body = $point . "\n";
 
 if ($opt_expiration_date) {
     my $i = 0;
-    while ( $i < @$point_with_timelimits ) {
+    while ( $i < @$expiration_dates ) {
         $body .= sprintf( "%d(%s)\n",
             $point_with_timelimits->[$i],
             $expiration_dates->[$i] );
