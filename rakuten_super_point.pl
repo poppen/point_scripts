@@ -40,12 +40,12 @@ my $scraper = scraper {
     );
 
     process(
-        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder scroll"]/dt',
+        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder" or @class="limitedBorder scroll"]/dt',
         'expiration_date[]' => 'TEXT'
     );
 
     process(
-        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder scroll"]/dd',
+        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder" or @class="limitedBorder scroll"]/dd',
         'point_with_timelimit[]' => 'TEXT'
     );
 };
@@ -59,7 +59,7 @@ my $body = $point . "\n";
 
 if ($opt_expiration_date) {
     my $i = 0;
-    while ( $i < @$point_with_timelimits ) {
+    while ( $i < @$expiration_dates ) {
         $body .= sprintf( "%d(%s)\n",
             $point_with_timelimits->[$i],
             $expiration_dates->[$i] );
