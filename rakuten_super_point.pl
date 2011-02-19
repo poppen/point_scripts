@@ -40,12 +40,12 @@ my $scraper = scraper {
     );
 
     process(
-        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder scroll"]/dt',
+        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder" or @class="limitedBorder scroll"]/dt',
         'expiration_date[]' => 'TEXT'
     );
 
     process(
-        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder scroll"]/dd',
+        'id("pointAccount")//div[@class="pointDetail"]/dl[@class="limitedBorder" or @class="limitedBorder scroll"]/dd',
         'point_with_timelimit[]' => 'TEXT'
     );
 };
