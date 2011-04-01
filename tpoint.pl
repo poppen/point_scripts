@@ -26,7 +26,7 @@ my $url = 'https://tsite.jp';
 my $mech = WWW::Mechanize->new();
 
 $mech->get($url);
-$mech->follow_link( id => 'SideLoginBtn' );
+$mech->follow_link( url => 'https://tsite.jp/tm/pc/login/STKIp0001001.do' );
 
 $mech->form_name('form1')->action( $url . '/tm/pc/login/STKIp0001010.do' );
 $mech->field('LOGIN_ID', $tsite_config->{user});
@@ -34,8 +34,8 @@ $mech->field('PASSWORD', $tsite_config->{pass});
 my $response = $mech->submit();
 
 my $scraper = scraper {
-    process 'strong.SideMyPoint', 'point'           => 'TEXT';
-    process 'p.Period1',          'expiration_date' => 'TEXT';
+    process 'dl.detail > dd.number', 'point'           => 'TEXT';
+    process 'ul.c_period > li',      'expiration_date' => 'TEXT';
 };
 
 my $result          = $scraper->scrape( $mech->content );
