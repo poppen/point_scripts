@@ -34,7 +34,7 @@ $mech->field('PASSWORD', $tsite_config->{pass});
 my $response = $mech->submit();
 
 my $scraper = scraper {
-    process 'dl.detail > dd.number', 'point'           => 'TEXT';
+    process 'p.point > span.number', 'point'           => 'TEXT';
     process 'ul.c_period > li',      'expiration_date' => 'TEXT';
 };
 
